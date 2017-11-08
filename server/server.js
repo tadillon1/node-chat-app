@@ -14,6 +14,16 @@ app.use(express.static(publicPath));    //Point express to the public folder con
 io.on('connection', (socket) => {     //event listener (listen for an event) in this case it is connection
   console.log('New user connected');
 
+  socket.emit('newMessage', {         //EMIT a 'newMessage' socket type with the object containing from, text, and createAt
+    from: 'John',
+    text: 'See you then.',
+    createdAt: 123123
+  });
+
+  socket.on('createMessage', (newMessage) => {  // CUSTOM EVEN LISTENER for createMessage event
+    console.log('New Message Recieved', newMessage);
+  });
+
   socket.on('disconnect', () => {   //event listener for disconnect.  I.E. the client drops off...
     console.log('User was disconnected');
   });

@@ -9,21 +9,8 @@
   <p> Welcome to the chat app </p>
 
   <script src="/socket.io/socket.io.js"></script>
-
-  <script>
-    var socket = io();  <!--initiating a request from the client to the server and keep the connection open-->
-
-    socket.on('connect', () => {            <!-- Initiate a persistent connection to the server -->
-      console.log('Connected to server');
-    });
-
-    socket.on('disconnect', () => {         <!-- Listen for dropped server -->
-      console.log('Disconnected from server');
-    });
-
-  </script>
+  <script src='/js/index.js'></script>
 
 </body>
-
 
 </html>
