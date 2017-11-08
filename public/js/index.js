@@ -5,11 +5,7 @@ var socket = io();
 socket.on('connect', function () {
   console.log('Connected to server');
 
-  <!-- Custom emit connection to the server for a new message -->
-  socket.emit('createMessage', {
-    from: 'Andrew',
-    text: 'Yup, that works for me.'
-  });
+
 });
 
 <!-- Listen for dropped server -->
