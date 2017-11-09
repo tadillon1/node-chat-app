@@ -3,6 +3,7 @@ const http = require('http');         //node http server
 const express = require('express');   //node express web server
 const socketIO = require('socket.io'); //node socket IO tool for event handling
 
+const {generateMessage} = require('./utils/message');
 const publicPath = path.join(__dirname, '../public');  //path to the 'public' folder for any POSIX OS
 const port = process.env.PORT || 3000;    //Web Server listening on heroku port or PORT 3000 for local
 var app = express();
@@ -16,26 +17,16 @@ io.on('connection', (socket) => {     //event listener (listen for an event) in 
 
 
   //Send message to newly joined user- Welcome to the chat app
-   socket.emit('newMessage', {
-     from: "Admin",
-     text: "Welcome to the chat app"
-   });
+   socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
+
   //broadast to all users except the newly joined user"New User joined" and createdAt
-  socket.broadcast.emit('newMessage', {
-     from: "Admin",
-     text: "New User Joined",
-     createdAt: new Date().getTime()
-   });
+  socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined'));
 
 
 
   socket.on('createMessage', (message) => {  // CUSTOM EVEN LISTENER for createMessage event
     console.log('New Message Recieved', message);
-    io.emit('newMessage', {
-      from: message.from,
-      text: message.text,
-      createdAt: new Date().getTime()
-    });
+    io.emit('newMessage', generateMessage(message.from, message.text));
     // socket.broadcast.emit('newMessage', { //broadcast the message to everyone EXCEPT the user who sent it
     //     from: message.from,
     //     text: message.text,
