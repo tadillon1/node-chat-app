@@ -33,11 +33,14 @@ socket.on('newLocationMessage', function (message) {
 
 jQuery('#message-form').on('submit', function (e) {   //Click listener for SUBMIT button
   e.preventDefault();     //prevent default behavior for form submissions to be a query in the form
+
+  var messageTextbox = jQuery('[name=message]');
+
   socket.emit('createMessage', {
     from: 'User',
-    text: jQuery('[name=message]').val()
+    text: messageTextbox.val()
   }, function () {        //callback function for message receipt from the SERVER
-
+    messageTextbox.val('');
   });
 });
 
@@ -47,12 +50,16 @@ locationButton.on('click', function () {     //Click listener for the locationBu
     return alert('Geolocation is not supported by your browser.');
   }
 
+  locationButton.attr('disabled', 'disabled').text('Sending location...');  //disables the location button until the google api responds and displays message while you wait.
+
   navigator.geolocation.getCurrentPosition(function (position) {
+    locationButton.removeAttr('disabled').text('Send location');  //removed the disabled attribute of the button and reset the text on the button
     socket.emit('createLocationMessage', {
       latitude: position.coords.latitude,
       longitude: position.coords.longitude
     });
   }, function () {
+    locationButton.removeAttr('disabled').text('Send location');  //removed the disabled attribute of the button and reset the text on the button
     alert('Unable to fetch location.');
   });
 });

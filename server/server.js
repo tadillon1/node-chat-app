@@ -27,7 +27,7 @@ io.on('connection', (socket) => {     //event listener (listen for an event) in 
   socket.on('createMessage', (message, callback) => {  // CUSTOM EVEN LISTENER for createMessage event
     console.log('New Message Recieved', message);
     io.emit('newMessage', generateMessage(message.from, message.text));
-    callback('This is from the server.');  //Acknolodge we got the request.  This text is sent to the client as data to the emitter call back function
+    callback();  //Acknolodge we got the request.  This text is sent to the client as data to the emitter call back function
   });
 
   socket.on('createLocationMessage', (coords) => {   //CUSTOM EVENT LISTENER for createLocationMessage event
