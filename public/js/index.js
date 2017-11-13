@@ -14,22 +14,27 @@ socket.on('disconnect', function () {
 <!-- CUSTOM LISTENER for new messages from the server -->
 socket.on('newMessage', function (message) {
   var formattedTime = moment(message.createdAt).format('h:mm a');
-  var li = jQuery('<li></li>');     <!--  Want to display new messages as a list item -->
-  li.text(`${message.from} ${formattedTime}: ${message.text}`);  <!-- Use template string to display the new message -->
+  var template = jQuery('#message-template').html();
+  var html = Mustache.render(template, {
+    text: message.text,
+    from: message.from,
+    createdAt: formattedTime
+  });
 
-  jQuery('#messages').append(li);
+  jQuery('#messages').append(html);
 });
 
 <!-- CUSTOM LISTENER for new locationMessages response from the server -->
 socket.on('newLocationMessage', function (message) {
   var formattedTime = moment(message.createdAt).format('h:mm a');
-  var li = jQuery('<li></li>');
-  var a = jQuery('<a target = "blank">My Current Location</a>');  //Set target to blank so we don't overwrite the messages with locations
+  var template = jQuery('#location-message-template').html();
+  var html = Mustache.render(template, {
+    from: message.from,
+    url: message.url,
+    createdAt: formattedTime
+  });
 
-  li.text(`${message.from} ${formattedTime}: `);   //Show who is sharing their location
-  a.attr('href', message.url);    //Show the location URL
-  li.append(a);                   //Append the URL to the messages list.
-  jQuery('#messages').append(li);
+  jQuery('#messages').append(html);
 });
 
 
