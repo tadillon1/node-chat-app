@@ -54,13 +54,20 @@ io.on('connection', (socket) => {     //event listener (listen for an event) in 
   });
 
   socket.on('createMessage', (message, callback) => {  // CUSTOM EVEN LISTENER for createMessage event
-    console.log('New Message Recieved', message);
-    io.emit('newMessage', generateMessage(message.from, message.text));
+    var user = users.getUser(socket.id);
+
+    if(user && isRealString(message.text)) {
+      io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));  //Emit message to only in the same room and from the user's name who typed the message
+    }
     callback();  //Acknolodge we got the request.  This text is sent to the client as data to the emitter call back function
   });
 
   socket.on('createLocationMessage', (coords) => {   //CUSTOM EVENT LISTENER for createLocationMessage event
-    io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
+    var user = users.getUser(socket.id);
+
+    if(user) {
+      io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));  //Emit location message to only the room the user is in...
+    }
   });
 
   socket.on('disconnect', () => {   //event listener for disconnect.  I.E. the client drops off...
