@@ -19,12 +19,33 @@ function scrollToBottom() {
 
 <!-- Initiate a persistent connection to the server -->
 socket.on('connect', function () {
-  console.log('Connected to server');
+  var params = jQuery.deparam(window.location.search);
+
+  socket.emit('join', params, function (err) {   //Connect to the server passing in the 'params' from the search string.  This contains the userName and Room information
+    if(err){
+      alert(err);
+      window.location.href = '/'; // If err then send the user back to the root file.
+    } else {
+      console.log('No error');
+    }
+  });
 });
 
 <!-- Listen for dropped server -->
 socket.on('disconnect', function () {
   console.log('Disconnected from server');
+});
+
+
+socket.on('updateUserList', function (users) {
+  var ol = jQuery('<ol></ol>');
+
+  users.forEach(function (user) {
+    ol.append(jQuery('<li></li>').text(user));
+  });
+
+  jQuery('#users').html(ol);
+
 });
 
 <!-- CUSTOM LISTENER for new messages from the server -->
